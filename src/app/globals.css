@@ -1,4 +1,277 @@
+* {
+	margin: 0;
+}
+body {
+	background-color: lightgrey;
+}
 .navbar {
 	display: flex;
-	gap: 30px;
+	justify-content: space-around;
+	margin-bottom: 30px;
+	background-color: white;
+	padding: 20px;
+}
+
+.button-users {
+	padding: 10px;
+	background-color: orange;
+	color: #fff;
+	border: none;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: orangered;
+}
+
+.overlay {
+	display: flex;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	align-items: center;
+	justify-content: center;
+}
+
+.popup {
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+	text-align: center;
+}
+
+.close {
+	color: #7f8c8d;
+	text-decoration: none;
+	cursor: pointer;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.close:hover {
+	color: #34495e;
+}
+
+.register {
+	font-size: 12px;
+	margin-top: 15px;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+}
+
+.box-create-community {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	width: 200px;
+	padding: 20px;
+	margin-top: 20px;
+	background-color: white;
+}
+.btn-community {
+	padding: 10px;
+	background-color: orange;
+	color: #fff;
+	border: none;
+	border-radius: 30px;
+	cursor: pointer;
+}
+
+.box-community {
+	background-color: white;
+	width: 300px;
+}
+.create-post-in {
+	display: flex;
+	flex-direction: column;
+	border-radius: 10px;
+	border: 1px solid rgb(184, 173, 173);
+	width: 600px;
+	padding: 15px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-block: 20px;
+	background-color: white;
+}
+.subreddit-id {
+	color: black;
+	border: 3 solid lightgray;
+	border-radius: 10px;
+	padding: 10px;
+	padding-left: 20px;
+	font-size: 15px;
+	background-color: rgb(247, 242, 242);
+}
+
+.r {
+	/* display: flex;
+	justify-content: flex-start; */
+	font-weight: bold;
+}
+.post-by {
+	margin-left: 50pxs;
+}
+
+.select {
+	margin: 20px;
+	margin-block: 20px;
+	margin-left: 300px;
+}
+
+.select select {
+	height: 40px;
+	padding-left: 15px;
+	margin-top: 20px;
+	width: 300px;
+}
+
+.choose-a-community {
+	display: flex;
+	flex-direction: column;
+	border-radius: 10px;
+	border: 1px solid rgb(184, 173, 173);
+	width: 600px;
+	padding: 15px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-block: 20px;
+	background-color: white;
+}
+.create-post-input {
+	border: none;
+	padding: 10px;
+	font-size: 15px;
+	background-color: rgb(247, 243, 243);
+}
+
+.box-title {
+	display: flex;
+	flex-direction: column;
+	border-radius: 10px;
+	border: 1px solid lightgrey;
+	width: 600px;
+	padding: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-block: 20px;
+	word-wrap: break-word; /* This property makes the text wrap onto the next line if it's too long */
+	overflow: hidden;
+	background-color: white;
+}
+
+.box-message {
+	height: 200px;
+}
+.box-post {
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	border: none;
+	width: 600px;
+	padding-left: 20px;
+	padding-bottom: 20px;
+	padding-right: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-block: 20px;
+	word-wrap: break-word; /* This property makes the text wrap onto the next line if it's too long */
+	overflow: hidden;
+}
+
+.comment-count {
+	font-size: 12px;
+}
+
+.box-comment {
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	width: 600px;
+	padding-left: 20px;
+	padding-bottom: 20px;
+	padding-right: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-block: 20px;
+	word-wrap: break-word; /* This property makes the text wrap onto the next line if it's too long */
+	overflow: hidden;
+}
+
+.btn-comment {
+	border: 1px solid;
+	background-color: rgb(45, 158, 196);
+	border-radius: 30px;
+	color: azure;
+	width: 100px;
+	padding: 10px;
+	font-size: 15px;
+	cursor: pointer;
+	margin-top: 15px;
+}
+
+.comment-as {
+	font-size: 12px;
+	margin-bottom: 10px;
+}
+
+.edit-delete {
+	display: flex;
+	cursor: pointer;
+	margin-top: 15px;
+}
+.edit {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.comment-box {
+	display: flex;
+	flex-direction: column;
+	padding-left: 20px;
+	padding-bottom: 20px;
+	padding-right: 20px;
+	word-wrap: break-word;
+	overflow: hidden;
+	height: 150px;
+	font-size: 18px;
+	margin-right: 30px;
+}
+.sub-name {
+	text-align: center;
+}
+
+.post-header {
+	font-size: 12px;
+}
+
+.title {
+	font-weight: bold;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.box-name {
+	display: flex;
+	flex-direction: column;
+	padding: 20px;
+	width: 200px;
+	margin: 20px;
+	font-weight: bold;
+	color: black;
+}
+
+.indent {
+	margin-left: 10px;
+	border-left: 1px solid red;
+}
+
+.comments-list {
+	margin: auto;
 }

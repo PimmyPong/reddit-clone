@@ -1,11 +1,13 @@
 "use client";
 import { useRouter } from "next/navigation.js";
 import { useState } from "react";
+import Link from "next/link.js";
 
 export default function Login() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
+	const [isPopUp, setIsPopUp] = useState(false);
 
 	const router = useRouter();
 
@@ -20,31 +22,48 @@ export default function Login() {
 		if (info.error) {
 			return setError(info.error);
 		}
-
 		router.push("/");
 		router.refresh();
 	}
+	const handleClosePopup = () => {
+		setIsPopUp(true);
+		router.push("/");
+		router.refresh();
+	};
 
 	return (
-		<div>
-			<h3>Log In</h3>
-			<form onSubmit={handleLogin}>
-				<input
-					placeholder="Username"
-					onChange={(e) => setUsername(e.target.value)}
-					value={username}
-				/>
-				<br />
-				<input
-					placeholder="password"
-					onChange={(e) => setPassword(e.target.value)}
-					value={password}
-					type="password"
-				/>
-				<br />
-				<button type="submit">Login</button>
-				<p>{error}</p>
-			</form>
+		<div className="overlay">
+			<div className="popup">
+				<span className="close" onClick={handleClosePopup}>
+					x
+				</span>
+				<h3>Log In</h3>
+				<form onSubmit={handleLogin}>
+					<input
+						placeholder="Username"
+						onChange={(e) => setUsername(e.target.value)}
+						value={username}
+					/>
+					<br />
+					<input
+						placeholder="password"
+						onChange={(e) => setPassword(e.target.value)}
+						value={password}
+						type="password"
+					/>
+					<br />
+					<button className="button-users" type="submit">
+						Login
+					</button>
+					<div className="register">
+						New to Reddit?{" "}
+						<Link href={"/register"} style={{ textDecoration: "none" }}>
+							Register
+						</Link>
+					</div>
+					<p>{error}</p>
+				</form>
+			</div>
 		</div>
 	);
 }

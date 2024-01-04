@@ -6,6 +6,7 @@ export default function Logout() {
 	const router = useRouter();
 	return (
 		<Link
+			style={{ textDecoration: "none" }}
 			onClick={async () => {
 				const response = await fetch("/api/users/logout", {
 					method: "POST",

@@ -6,6 +6,7 @@ export default function Register() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
+	const [isPopUp, setIsPopUp] = useState(false);
 
 	const router = useRouter();
 
@@ -23,22 +24,37 @@ export default function Register() {
 		router.push("/");
 		router.refresh();
 	}
+	const handleClosePopup = () => {
+		setIsPopUp(true);
+		router.push("/");
+		router.refresh();
+	};
 
 	return (
-		<form onSubmit={handleRegister}>
-			<input
-				value={username}
-				placeholder="username"
-				onChange={(e) => setUsername(e.target.value)}
-			/>
-			<input
-				value={password}
-				placeholder="password"
-				onChange={(e) => setPassword(e.target.value)}
-			/>
-			<button>Register</button>
-			<p>{error}</p>
-		</form>
+		<div className="overlay">
+			<div className="popup">
+				<form onSubmit={handleRegister}>
+					<span className="close" onClick={handleClosePopup}>
+						x
+					</span>
+					<h3>Register</h3>
+					<input
+						placeholder="Username"
+						onChange={(e) => setUsername(e.target.value)}
+						value={username}
+					/>
+					<br />
+					<input
+						value={password}
+						placeholder="password"
+						onChange={(e) => setPassword(e.target.value)}
+					/>
+					<br />
+					<button className="button-users">Register</button>
+					<p>{error}</p>
+				</form>
+			</div>
+		</div>
 	);
 }
 

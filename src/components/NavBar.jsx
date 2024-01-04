@@ -5,12 +5,17 @@ export default async function NavBar() {
 	const user = await fetchUser();
 	return (
 		<div className="navbar">
-			<Link href={"/"}>Home</Link>
-			<Link href={"/subreddits"}>Subreddits</Link>
+			<Link href={"/"} style={{ textDecoration: "none" }}>Home</Link>
+
+			<Link href={"/subreddits"} style={{ textDecoration: "none" }}>
+				Subreddits
+			</Link>
+
 			{!user.id && (
 				<>
-					<Link href={"/login"}>login</Link>
-					<Link href={"/register"}>Register</Link>
+					<Link href={"/login"} style={{ textDecoration: "none" }}>
+						Login
+					</Link>
 				</>
 			)}
 
