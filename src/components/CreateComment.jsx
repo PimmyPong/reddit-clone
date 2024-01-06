@@ -1,47 +1,47 @@
 "use client";
 import { useRouter } from "next/navigation.js";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchUser } from "@/lib/fetchUser.js";
 
-export default function CreateComment({comments}) {
-	const [comment, setComment] = useState("");
+export default function CreateComment({ user, subredditId, parentId, post }) {
+	const [commentText, setCommentText] = useState("");
+	const [error, setError] = useState("");
 	const router = useRouter();
 
 	async function handleClick(e) {
 		e.preventDefault();
-		// Update the comments state with the new comment including user.id
 
-			const response = await fetch(`/api/posts`, {
-				method: "POST",
-				body: JSON.stringify({
-					message: comment,
-				}),
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-			const info = await response.json();
-			
-
+		const response = await fetch(`/api/posts`, {
+			method: "POST",
+			body: JSON.stringify({
+				message: commentText,
+				subredditId,
+				parentId,
+			}),
+		});
+		const info = await response.json();
+		if (info.error) {
+			setError(info.error);
+		}
+		setCommentText(""); // Clear the comment text input
+		router.refresh();
 	}
 	return (
-		<div>
-			<div className="box-comment">
-				<label className="comment-as">Comment as: </label>
-
+		<div className="box-comment">
+			<form onSubmit={handleClick}>
+				{/* user is undifined */}
+				<label className="comment-as">{`Comment as: ${user.username}`} </label>
 				<textarea
-					value={comment}
-					onChange={(e) => setComment(e.target.value)}
+					value={commentText}
+					onChange={(e) => setCommentText(e.target.value)}
 					className="comment-box"
 					placeholder="What are your thought?"></textarea>
-				<button onClick={handleClick} className="btn-comment">
+				<p>{error}</p>
+				<button type="submit" className="btn-comment">
 					comment
 				</button>
-			</div>
-
-			<div className="comment-list">
-				<h3>Comments</h3>
-				{comments}
-			</div>
+			</form>
+			{/* <div className="comment-list">{comments}</div> */}
 		</div>
 	);
 }

@@ -13,10 +13,10 @@ export async function POST(request, response) {
 			});
 		}
 
-		if (!title) {
+		if (!message) {
 			return NextResponse.json({
 				success: false,
-				error: "Please provide title to post",
+				error: "Please provide a message",
 			});
 		}
 

@@ -15,33 +15,38 @@ export default async function Subreddit({ params }) {
 	});
 	const posts = await prisma.post.findMany({
 		where: {
-			
 			subredditId,
 			parentId: null,
 		},
 		orderBy: {
 			createdAt: "desc",
 		},
+		include: {
+			user: true, // Include the user information for each subreddit
+		},
 	});
 
 	return (
-		<div key={posts.subredditId}>
+		<div>
 			<span className="create-post-in">
-				<Link
-					href={`/createPost/${subredditId}`}
-					style={{ textDecoration: "none" }}>
-					<span className="subreddit-id">{`Create post in /r${subreddit.name}`}</span>
+				<Link href={`/posts`} style={{ textDecoration: "none" }}>
+					<span className="subreddit-id">{`Create post`}</span>
 				</Link>
 			</span>
 
-			{posts.map(async (post) => (
-				<Post
-					post={post}
-					subreddit={subreddit}
-					user={fetchUser()}
-					comments={await countComments(post)}
-				/>
-			))}
+			{posts.map(async (post) => {
+				const comments = await countComments(post);
+				const user = post.user; // Access user information directly from the post
+				return (
+					<Post
+						key={post.id}
+						post={post}
+						subreddit={subreddit}
+						user={user}
+						comments={comments}
+					/>
+				);
+			})}
 		</div>
 	);
 }

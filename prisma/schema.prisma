@@ -20,6 +20,7 @@ model User {
   posts      Post[]
   votes      Vote[]
 }
+//each user has multiple subs,posts,and votes
 
 model Subreddit {
   id        String   @id @default(uuid())
@@ -29,6 +30,25 @@ model Subreddit {
   userId    String
   posts     Post[]
 }
+//each sub has multiple posts
+
+model Post {
+  id          String    @id @default(uuid())
+  title       String?
+  message     String
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  subreddit   Subreddit @relation(fields: [subredditId], references: [id])
+  subredditId String
+  parent      Post?     @relation("children", fields: [parentId], references: [id], onDelete: Cascade)
+  children    Post[]    @relation("children")
+  parentId    String?
+  votes       Vote[]
+  createdAt   DateTime  @default(now())
+}
+//parentId point to []of children(same relationship)
+//parent = comment(post) but it's optional cuz the root of comment does not have a parent. it is just the child of the post, doesn't have children or parent above it.
+//
 
 model Vote {
   id       String  @id @default(uuid())
@@ -39,33 +59,3 @@ model Vote {
   isUpvote Boolean
 }
 
-model Post {
-  id          String  @id @default(uuid())
-  title       String
-  message     String?
-  userId      String
-  subredditId String
-  parentId    String?
-  parent      Post?   @relation("children", fields: [parentId], references: [id], onDelete: Cascade)
-
-  subreddit Subreddit @relation(fields: [subredditId], references: [id])
-  user      User      @relation(fields: [userId], references: [id])
-  votes     Vote[]
-  children  Post[]    @relation("children")
-  createdAt DateTime  @default(now())
-}
-
-// model Post {
-//   id          String    @id @default(uuid())
-//   title       String
-//   message     String?
-//   userId      String
-//   subredditId String
-//   parentId    String?
-//   parent      Post?     @relation("post", fields: [parentId], references: [id])
-//   subreddit   Subreddit @relation(fields: [subredditId], references: [id])
-//   user        User      @relation(fields: [userId], references: [id])
-//   votes       Vote[]
-//   children    Post[]    @relation("post")
-//   createdAt   DateTime  @default(now())
-// }

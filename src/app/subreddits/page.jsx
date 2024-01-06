@@ -1,23 +1,35 @@
 import CreateCommunity from "@/components/CreateCommunity.jsx";
 import { prisma } from "@/lib/prisma.js";
 import Link from "next/link.js";
+import { fetchUser } from "@/lib/fetchUser.js";
 
 export default async function SubReddits() {
-	const subreddits = await prisma.subreddit.findMany();
+	const subreddits = await prisma.subreddit.findMany({
+		orderBy: {
+			createdAt: "desc",
+		},
+		include: {
+			user: true, // Include the user information for each subreddit
+		},
+	});
 	return (
 		<div className="box-community">
-			<CreateCommunity />
+			<div className="cc-btn">
+				
+				<CreateCommunity />
+			</div>
 
 			{subreddits.map((subreddit) => (
 				<div key={subreddit.id} className="box-name">
-					<Link
-						href={`/subreddits/${subreddit.id}`}
-						style={{ textDecoration: "none" }}>
-						/r
-						{subreddit.name}
-						
-					</Link>
-					
+					<span className="subreddit-create-by">
+						<Link
+							href={`/subreddits/${subreddit.id}`}
+							style={{ textDecoration: "none" }}>
+							/r
+							{subreddit.name}
+						</Link>
+					</span>
+					<span className="create-by">{`Created by: ${subreddit.user.username}`}</span>
 				</div>
 			))}
 		</div>

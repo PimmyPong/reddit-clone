@@ -2,43 +2,27 @@ import Post from "@/components/Post.jsx";
 import { prisma } from "@/lib/prisma.js";
 import { countComments } from "@/lib/countComments.js";
 import { fetchUser } from "@/lib/fetchUser.js";
-import Comment from "@/components/Comment.jsx";
-async function displayComments(post, level) {
-	const comments = await prisma.post.findMany({
-		where: {
-			parentId: post.id,
-		},
-	});
-	const divs = [];
-	for (const c of comments) {
-		divs.push(<div className="indent">{displayComments(c, level + 1)}</div>);
-	}
-	if (post.parentId) {
-		divs.splice(
-			0,
-			0,
-			<div className="comment">
-				<Comment post={post}></Comment>
-			</div>
-		);  
-	}
-	return divs;
-}
+import CreateComment from "@/components/CreateComment.jsx";
+import Reply from "@/components/Reply.jsx";
 
 export default async function RedditPost({ params }) {
+	const { postId } = params;
 	const post = await prisma.post.findFirst({
 		where: {
-			id: params.postId,
+			id: postId,
+			// parentId: null,
+		},
+		include: {
+			user: true,
+			children: true,
+			votes: true,
 		},
 	});
 
 	if (!post) {
-		return (
-			<div>
-				<p>Post not found!</p>
-			</div>
-		);
+		return null;
 	}
+
 	const subreddit = await prisma.subreddit.findFirst({
 		where: {
 			id: post.subredditId,
@@ -47,15 +31,53 @@ export default async function RedditPost({ params }) {
 
 	const user = await fetchUser();
 	const commentsCount = await countComments(post);
+
+	const comments = await prisma.post.findMany({
+		// orderBy: {
+		// 	createdAt: "desc",
+		// },
+		where: {
+			parentId: postId,
+		},
+		include: {
+			user: {
+				select: { username: true },
+			},
+		},
+	});
+
+	const renderReply = (comment) => (
+		<Reply
+			key={comment.id}
+			comment={comment}
+			postId={postId}
+			user={user}
+			post={post}>
+			{comment.children && comment.children.map(renderReply)}
+		</Reply>
+	);
 	return (
-		<div>
+		<div className="posts-id">
 			<Post
 				post={post}
 				subreddit={subreddit}
-				commentsCount={commentsCount}
-				comments={<div>{displayComments(post)}</div>}
+				comments={commentsCount}
 				user={user}
 			/>
+			<div>
+				<CreateComment
+					user={user}
+					subredditId={post.subredditId}
+					parentId={postId}
+					post={post}
+				/>
+
+				{/* {comments.map((comment) => {
+					const user = comment.user;
+					return <Reply key={comment.id} comment={comment} user={user} />;
+				})} */}
+				<div>{comments.map((comment) => renderReply(comment))}</div>
+			</div>
 		</div>
 	);
 }

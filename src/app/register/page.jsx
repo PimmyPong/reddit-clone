@@ -17,7 +17,6 @@ export default function Register() {
 			body: JSON.stringify({ username, password }),
 		});
 		const info = await response.json();
-		console.log(info);
 		if (info.error) {
 			return setError(info.error);
 		}

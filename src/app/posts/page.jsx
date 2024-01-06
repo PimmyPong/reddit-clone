@@ -2,15 +2,11 @@ import CreatePost from "@/components/CreatePost.jsx";
 import { prisma } from "@/lib/prisma.js";
 
 export default async function NewPost(params) {
-	const subreddit = await prisma.subreddit.findFirst({
-		where: {
-			id: params.subredditId,
-		},
-	});
+	const subreddits = await prisma.subreddit.findMany();
 
 	return (
 		<div>
-			<CreatePost subreddit={subreddit} />
+			<CreatePost subreddits={subreddits} />
 		</div>
 	);
 }
