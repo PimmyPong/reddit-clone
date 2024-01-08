@@ -5,7 +5,7 @@ import { NextResponse } from "next/server.js";
 export async function PUT(request, response) {
 	try {
 		const { postId } = response.params;
-		const { title, message } = await request.json();
+		const { title, message, parentId } = await request.json();
 		const user = await fetchUser();
 
 		const findPost = await prisma.post.findFirst({
@@ -38,15 +38,9 @@ export async function PUT(request, response) {
 			data: {
 				title: title,
 				message: message,
+				parent: parentId,
 			},
 		});
-
-		if (!title) {
-			return NextResponse.json({
-				success: false,
-				error: "Please provide content to edit your post",
-			});
-		}
 
 		return NextResponse.json({ success: true, post });
 	} catch (error) {

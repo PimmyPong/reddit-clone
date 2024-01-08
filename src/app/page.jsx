@@ -28,8 +28,8 @@ export default async function Home({ params }) {
 
 	return (
 		<div className="">
-			{/* <SubReddits />
-			<div className="home-posts">
+			<SubReddits />
+			{/* <div className="home-posts">
 				{posts.map((post) => {
 					return (
 						<div key={post.id}>

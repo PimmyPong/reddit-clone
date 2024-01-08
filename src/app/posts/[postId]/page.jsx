@@ -19,9 +19,9 @@ export default async function RedditPost({ params }) {
 		},
 	});
 
-	if (!post) {
-		return null;
-	}
+	// if (!post) {
+	// 	return null;
+	// }
 
 	const subreddit = await prisma.subreddit.findFirst({
 		where: {
@@ -56,9 +56,19 @@ export default async function RedditPost({ params }) {
 			{comment.children && comment.children.map(renderReply)}
 		</Reply>
 	);
+
+	const votes = await prisma.vote.findFirst({
+		where: {
+			id: postId,
+		},
+		include: {
+			user: true,
+		},
+	});
 	return (
 		<div className="posts-id">
 			<Post
+				vote={votes}
 				post={post}
 				subreddit={subreddit}
 				comments={commentsCount}

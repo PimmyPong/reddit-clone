@@ -8,7 +8,7 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 import Vote from "./Vote.jsx";
 
-export default function Post({ subreddit, post, comments, user }) {
+export default function Post({ subreddit, post, comments, user, vote }) {
 	const [isEdit, setIsEdit] = useState(false);
 	const [editTitle, setEditTitle] = useState(post.title);
 	const [message, setEditMessage] = useState(post.message);
@@ -43,7 +43,7 @@ export default function Post({ subreddit, post, comments, user }) {
 		<div className="container-posts-vt-pt-column">
 			<div className="con-posts-vt-pt-column">
 				<div className="vote-con">
-					<Vote />
+					<Vote post={post} vote={vote} />
 					{/* <span type="button">
 						<svg
 							fill="#000000"

@@ -6,11 +6,13 @@ import { faReply } from "@fortawesome/free-solid-svg-icons";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation.js";
-import Delete from "./Delete.jsx";
 
-export default function Reply({ comment, postId, user }) {
+export default function Reply({ comment, postId }) {
 	const [replyText, setReplyText] = useState("");
 	const [isReply, setIsReply] = useState(false);
+	const [isEdit, setIsEdit] = useState(false);
+	const [editReplyComment, setEditReplyComment] = useState(comment.message);
+
 	const [error, setError] = useState("");
 	const router = useRouter();
 
@@ -43,12 +45,34 @@ export default function Reply({ comment, postId, user }) {
 	function cancel() {
 		setIsReply(false);
 	}
+
+	function handleIsEdit() {
+		setIsEdit(true);
+		router.refresh();
+	}
+
+	async function handleEdit(e) {
+		e.preventDefault();
+		const response = await fetch(`/api/posts/${comment.id}`, {
+			method: "PUT",
+			body: JSON.stringify({
+				message: editReplyComment,
+			}),
+		});
+		const info = await response.json();
+		router.refresh();
+		if (info.error) {
+			setError(info.error);
+			router.refresh();
+		}
+		setIsEdit(false);
+	}
 	return (
 		<div className="reply11">
 			<div className="reply-1">
 				<div className="reply-2-vertical">
 					{/* user is undefined */}
-					Reply by: {user.username}
+					Reply by: {comment.user.username}
 					<div className="reply-3">{comment.message}</div>
 					<div className="reply-4-flex-btn">
 						<span type="button">
@@ -72,7 +96,27 @@ export default function Reply({ comment, postId, user }) {
 							</svg>
 						</span>
 						{/* edit */}
-						<span>
+						{isEdit && (
+							<form>
+								<textarea
+									className="isEdit-2"
+									type="text"
+									value={editReplyComment}
+									onChange={(e) => setEditReplyComment(e.target.value)}
+								/>
+								<div className="edit-comment-btnCon">
+									<button
+										className="edit-btn"
+										type="button"
+										onClick={handleEdit}>
+										Edit
+									</button>
+									<button className="cancel">Cancel</button>
+								</div>
+							</form>
+						)}
+
+						<span type="button" onClick={handleIsEdit}>
 							<FontAwesomeIcon icon={faPenToSquare} /> Edit
 						</span>
 						{/* reply */}

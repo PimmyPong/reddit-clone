@@ -3,51 +3,84 @@ import { prisma } from "@/lib/prisma.js";
 import { NextResponse } from "next/server.js";
 
 export async function POST(request, response) {
-	const { postId } = response.params;
 	try {
-		// Attempt to find the vote
-		const vote = await prisma.vote.findFirst({
+		const { voteType, postId } = await request.json();
+
+		const post = await prisma.post.findFirst({
 			where: {
 				id: postId,
 			},
 		});
 
-		// If the vote exists, update it
-		if (vote) {
-			await prisma.vote.update({
+		const user = fetchUser();
+
+		if (!post) {
+			return NextResponse.json({ success: false, error: "No Post Found" });
+		}
+
+		const existingVote = await prisma.vote.findFirst({
+			where: {
+				postId,
+				userId: user.id,
+			},
+		});
+
+		if (existingVote) {
+			const updatedVote = await prisma.vote.update({
+				where: {
+					id: existingVote.id,
+				},
+				data: {
+					isUpvote: voteType,
+				},
+			});
+
+			if (existingVote.isUpvote === voteType) {
+				await prisma.vote.delete({
+					where: {
+						id: existingVote.id,
+					},
+				});
+
+				return NextResponse.json({
+					success: true,
+					vote: updatedVote,
+				});
+			}
+
+			const newVote = await prisma.vote.create({
+				data: {
+					postId,
+					userId: user.id,
+					isUpvote: voteType,
+				},
+			});
+
+			const updatedPost = await prisma.post.update({
 				where: {
 					id: postId,
 				},
 				data: {
-					isUpvote: true,
+					votes: newVote,
 				},
 			});
-		} else {
-			// Handle the case where the vote doesn't exist
-			return NextResponse.json({ success: false, error: "Vote not found" });
-		}
 
-		const user = fetchUser();
-		if (!user.id) {
+			return NextResponse.json({
+				success: true,
+				vote: newVote,
+				post: updatedPost,
+			});
+		} else {
+			// Return a response in case existingVote is not found
 			return NextResponse.json({
 				success: false,
-				error: "Please log in to vote!",
+				error: "Vote not found",
 			});
 		}
-
-		// Fetch the updated vote
-		const updatedVote = await prisma.vote.findFirst({
-			where: {
-				id: postId,
-			},
-		});
-
-		return NextResponse.json({ success: true, vote: updatedVote });
 	} catch (error) {
-		console.error("Error updating vote:", error);
 		return NextResponse.json({
 			success: false,
-			error: "Failed to update vote",
+			error: error.message,
 		});
 	}
 }
